@@ -192,7 +192,7 @@ func Open(path string, mode os.FileMode, options *Options) (*DB, error) {
 	db.ops.writeAt = db.file.WriteAt
 
 	// Initialize the database if it doesn't exist.
-	if info, err := db.file.Stat(); err != nil {
+	if info, err := db.file.Stat(); err != nil { // TODO 这里为什么不调用 db.close()
 		return nil, err
 	} else if info.Size() == 0 {
 		// Initialize new files with meta pages.
@@ -202,9 +202,9 @@ func Open(path string, mode os.FileMode, options *Options) (*DB, error) {
 	} else {
 		// Read the first meta page to determine the page size.
 		var buf [0x1000]byte
-		if _, err := db.file.ReadAt(buf[:], 0); err == nil {
+		if _, err := db.file.ReadAt(buf[:], 0); err == nil { // TODO err != nil 怎么处理
 			m := db.pageInBuffer(buf[:], 0).meta()
-			if err := m.validate(); err != nil {
+			if err := m.validate(); err != nil { // TODO 校验不通过，也可以正常处理？覆盖数据？
 				// If we can't read the page size, we can assume it's the same
 				// as the OS -- since that's how the page size was chosen in the
 				// first place.
@@ -249,7 +249,7 @@ func (db *DB) mmap(minsz int) error {
 	info, err := db.file.Stat()
 	if err != nil {
 		return fmt.Errorf("mmap stat error: %s", err)
-	} else if int(info.Size()) < db.pageSize*2 {
+	} else if int(info.Size()) < db.pageSize*2 { // TODO 不应该是*4吗？
 		return fmt.Errorf("file size too small")
 	}
 
@@ -263,7 +263,7 @@ func (db *DB) mmap(minsz int) error {
 		return err
 	}
 
-	// Dereference all mmap references before unmapping.
+	// Dereference all mmap references before unmapping. // TODO 解引用的目的是什么？防止引用到无效的地址？lock ？解的过程中，可以并发操作？
 	if db.rwtx != nil {
 		db.rwtx.root.dereference()
 	}
@@ -285,7 +285,7 @@ func (db *DB) mmap(minsz int) error {
 	// Validate the meta pages. We only return an error if both meta pages fail
 	// validation, since meta0 failing validation means that it wasn't saved
 	// properly -- but we can recover using meta1. And vice-versa.
-	err0 := db.meta0.validate()
+	err0 := db.meta0.validate() // TODO 为什么 mmap之后会出错？
 	err1 := db.meta1.validate()
 	if err0 != nil && err1 != nil {
 		return err0

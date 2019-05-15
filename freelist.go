@@ -178,7 +178,7 @@ func (f *freelist) read(p *page) {
 		copy(f.ids, ids)
 
 		// Make sure they're sorted.
-		sort.Sort(pgids(f.ids))
+		sort.Sort(pgids(f.ids)) // TODO 单个页的操作，硬件保证原子性。参见 数据库系统概念
 	}
 
 	// Rebuild the page cache.
