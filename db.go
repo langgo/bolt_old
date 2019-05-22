@@ -104,7 +104,7 @@ type DB struct {
 	meta0    *meta
 	meta1    *meta
 	pageSize int
-	opened   bool
+	opened   bool // protected by metalock TODO 被哪个锁保护？// 这里说明了，语言层面可以支持。
 	rwtx     *Tx
 	txs      []*Tx
 	freelist *freelist
@@ -115,7 +115,7 @@ type DB struct {
 	batchMu sync.Mutex
 	batch   *batch
 
-	rwlock   sync.Mutex   // Allows only one writer at a time.
+	rwlock   sync.Mutex   // Allows only one writer at a time. // TODO 是一写多读并发吗？
 	metalock sync.Mutex   // Protects meta page access.
 	mmaplock sync.RWMutex // Protects mmap access during remapping.
 	statlock sync.RWMutex // Protects stats access.

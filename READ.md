@@ -23,3 +23,18 @@ BSD
 
 - 写存储，一定要保证测试完整。（这里可以采用TDD）因为，不写测试很难保证正确性
 - 错误日志，要留存。异常情况特别多。包括系统之间的差异
+
+
+## read
+
+page 序列化后的结构，内存对应文件
+
+node 序列化前的结构，对应实际上层接口（逻辑实现）
+
+
+## link
+
+https://lrita.github.io/categories/#bolt
+
+http://www.nextblockchain.top/categories/boltdb
+
