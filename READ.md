@@ -1,3 +1,87 @@
+
+## page and node
+
+```
+const (
+	branchPageFlag   = 0x01
+	leafPageFlag     = 0x02
+	metaPageFlag     = 0x04
+	freelistPageFlag = 0x10
+)
+
+branchPageElement
+leafPageElement
+meta
+func (f *freelist) write(p *page) error
+
+
+type page struct {
+	id       pgid
+	flags    uint16
+	count    uint16
+	overflow uint32
+	ptr      uintptr
+}
+
+  pgid flags count overflow ptr
+|--------|--|--|----|-------------
+
+
+// leaf
+
+type leafPageElement struct {
+	flags uint32
+	pos   uint32
+	ksize uint32
+	vsize uint32
+}
+
+flags pos ksize vsize
+|----|----|----|----|
+|----|----|----|----|
+|----|----|----|----|
+
+// branch
+
+type branchPageElement struct {
+	pos   uint32
+	ksize uint32
+	pgid  pgid
+}
+
+ pos  ksize  pgid
+|----|----|--------|
+|----|----|--------|
+|----|----|--------|
+|----|----|--------|
+
+// meta
+
+type meta struct {
+	magic    uint32
+	version  uint32
+	pageSize uint32
+	flags    uint32
+	root     bucket
+	freelist pgid
+	pgid     pgid
+	txid     txid
+	checksum uint64
+}
+
+// freelist
+
+pgid,pgid,pgid
+
+```
+
+
+
+
+
+
+## old
+
 事务和并发性没有关系
 
 db.Batch
