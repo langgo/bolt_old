@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/langgo/bolt"
+	"github.com/boltdb/bolt"
 )
 
 func main() {
